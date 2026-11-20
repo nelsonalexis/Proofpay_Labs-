@@ -6,7 +6,7 @@ A client owes an agency 100 XRP and the agency owes a freelancer 80 XRP. The nor
 
 ## Run the jury build
 
-Requires Node.js 24. The app opens in simulation. Select **Démarrer sur le Testnet** to create disposable Testnet accounts and run the live workflow.
+Requires Node.js 24. The app opens in simulation. Select **Start on Testnet** to create disposable Testnet accounts and run the live workflow.
 
 ```sh
 node worker/build.mjs
