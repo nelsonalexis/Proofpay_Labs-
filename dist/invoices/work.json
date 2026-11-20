@@ -1,0 +1,9 @@
+{
+  "id": "PP-080",
+  "issuer": "Freelancer",
+  "debtor": "Agency",
+  "service": "Logo production",
+  "faceValueXrp": 80,
+  "demo": true,
+  "currency": "XRP Testnet"
+}
