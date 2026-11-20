@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>ProofPay — Démonstration XRPL</title>
+<link rel="stylesheet" href="/styles.css">
+<script src="/xrpl.js" defer></script>
+<script type="module" src="/app.js"></script>
+</head>
+<body>
+<div class="shell" id="apercu">
+  <aside class="sidebar">
+    <a class="brand" href="#apercu"><span class="mark" aria-hidden="true"></span>ProofPay</a>
+    <nav aria-label="Navigation">
+      <a href="#apercu" aria-current="location"><i aria-hidden="true"></i>Aperçu</a>
+      <a href="#circuits"><i aria-hidden="true"></i>Circuits</a>
+      <a href="#activite"><i aria-hidden="true"></i>Activité</a>
+      <a href="#preuves"><i aria-hidden="true"></i>Preuves XRPL</a>
+      <a href="#impact"><i aria-hidden="true"></i>Impact</a>
+    </nav>
+  </aside>
+  <main>
+    <header class="toolbar">
+      <div class="network-form">
+        <label class="sr-only" for="mode">Réseau de démonstration</label>
+        <select id="mode"><option value="simulation">Simulation</option><option value="testnet">XRPL Testnet</option></select>
+        <button class="secondary reset" data-action="reset">Nouveau scénario</button>
+      </div>
+    </header>
+    <section class="hero" aria-labelledby="overview-heading">
+      <div class="hero-summary">
+        <p class="eyebrow">Créances tokenisées · XRPL</p>
+        <h1 id="overview-heading">Deux circuits.<br>Un seul règlement.</h1>
+        <p class="intro">En cas de panne du circuit normal, le secours peut régler les mêmes créances sans double paiement.</p>
+        <div class="mobile-choices">
+          <button class="primary" data-action="testnet">Démarrer sur le Testnet</button>
+          <a class="secondary" href="#circuits">Tester les circuits</a>
+          <button class="secondary" data-action="simulation" id="simulation-return" hidden>Revenir à la simulation</button>
+        </div>
+        <p id="notice" role="status" hidden></p>
+      </div>
+      <div class="hero-amount" aria-label="Facture de 100 XRP">
+        <div class="amount-head"><span>Montant de la facture</span><span class="tag">2 créances</span></div>
+        <strong>100 <small>XRP</small></strong>
+        <div class="split-caption">Répartition nette après règlement</div>
+        <div class="split" aria-hidden="true"><span>80</span><span>20</span></div>
+        <div class="split-captions"><span>Graphiste</span><span>Agence</span></div>
+      </div>
+    </section>
+
+  <div class="workspace">
+    <section class="routes" id="circuits" aria-labelledby="routes-title">
+      <div class="section-head"><h2 id="routes-title">Circuits de paiement</h2><span id="agency-state" class="status"></span></div>
+      <article class="card route">
+        <div class="route-top"><span class="route-icon normal-icon" aria-hidden="true"></span><div><h3>Circuit normal</h3><p>L’agence reçoit puis reverse la part du graphiste.</p></div></div>
+        <ul class="flows"><li><span>Restaurant <b>→</b> Agence</span><strong>100 XRP</strong></li><li><span>Agence <b>→</b> Graphiste</span><strong>80 XRP</strong></li></ul>
+        <button class="secondary" data-action="normal">Régler via l’agence</button>
+      </article>
+      <article class="card route rescue">
+        <div class="route-top"><span class="route-icon rescue-icon" aria-hidden="true"></span><div><h3>Circuit de secours</h3><p>Le restaurant répartit directement le paiement.</p></div></div>
+        <ul class="flows"><li><span>Restaurant <b>→</b> Graphiste</span><strong>80 XRP</strong></li><li><span>Restaurant <b>→</b> Agence</span><strong>20 XRP</strong></li></ul>
+        <button class="primary" data-action="rescue">Déclencher le secours</button>
+      </article>
+      <div class="controls" aria-label="Tests du scénario">
+        <button class="secondary" data-action="toggle" id="toggle">Simuler la panne</button>
+        <button class="secondary" data-action="wrong">Tester 85 + 15 XRP</button>
+        <button class="secondary" data-action="rollback">Tester l’annulation du lot</button>
+        <button class="secondary" data-action="replay" title="Tente l’autre circuit avec les offres initiales">Retenter l’autre circuit</button>
+      </div>
+    </section>
+    <section aria-labelledby="review-title" class="audit">
+      <div class="section-head"><h2 id="review-title" tabindex="-1">Contrôle du règlement</h2><span id="mode-tag" class="status"></span></div>
+      <div class="card report" id="report" aria-live="polite"></div>
+      <div class="card claims" id="claims"></div>
+    </section>
+  </div>
+  <section class="ai-section" aria-labelledby="agent-title">
+    <div class="section-head"><h2 id="agent-title">Agents en direct</h2><span id="ai-status" class="status"></span></div>
+    <div class="ai-grid">
+      <article class="card agent"><h3>Agent Agence</h3><p id="health-normal">Circuit normal</p><code id="identity-normal"></code><button class="secondary" data-action="ask-normal">Consulter l’agent principal</button><div id="decision-normal" aria-live="polite"></div></article>
+      <article class="card agent"><h3>Agent Restaurant</h3><p id="health-rescue">Circuit de secours</p><code id="identity-rescue"></code><button class="secondary" data-action="ask-rescue">Consulter l’agent de secours</button><div id="decision-rescue" aria-live="polite"></div></article>
+    </div>
+    <div id="signer-proof"></div>
+  </section>
+  <section class="activity" id="activite" aria-labelledby="activity-title">
+    <div class="section-head"><h2 id="activity-title">Journal de la démo</h2><a id="proof-export" href="/preuve.json" hidden>Télécharger la preuve</a></div>
+    <ol id="timeline"></ol>
+  </section>
+  <section class="activity" id="preuves" aria-labelledby="proof-title">
+    <div class="section-head"><h2 id="proof-title">Démo jury et preuves XRPL</h2></div>
+    <div class="card proof-card">
+      <h3>Parcours de 90 secondes</h3>
+      <ol>
+        <li>Initialiser le Testnet avant le passage. Montrer les deux transactions d’émission et les offres des deux circuits.</li>
+        <li>Simuler la panne, tester 85 + 15 XRP, puis déclencher le secours. Ouvrir les offres retenues et vérifier 80 + 20 XRP.</li>
+        <li>Cosigner et ouvrir le lot. Montrer les deux opérations internes, l’identité de secours et le mémo de décision.</li>
+        <li>Rétablir le principal et retenter. Vérifier un versement supplémentaire de 0 XRP, hors frais.</li>
+      </ol>
+      <p>Si le réseau ralentit, ouvrir un lot enregistré ci-dessous et expliquer les deux opérations dans l’explorateur.</p>
+      <a class="ledger-link" href="https://testnet.xrpl.org/transactions/ED5834C80637C52CBAAE86887759B42194F5A1A81142F9B283F874ED278972B4" target="_blank" rel="noopener">Lot mobile déjà validé · secours 80 + 20 XRP</a>
+    </div>
+    <div class="card proof-card">
+      <h3>Les mêmes NFT dans les deux circuits</h3>
+      <p>Chaque circuit a ses propres offres. Les deux circuits utilisent exactement les mêmes NFT. Après le transfert, les anciens vendeurs ne détiennent plus ces NFT et les anciennes offres ne permettent plus de refaire le règlement.</p>
+      <div id="offer-proof"></div>
+      <details><summary>Comparer à un registre de paiements centralisé</summary>
+        <p>Un système centralisé peut imposer un état unique « payé » par facture et utiliser des références idempotentes avec son prestataire. Avec ProofPay, les deux offres concurrentes sont rattachées aux mêmes actifs du registre et le transfert des deux NFT et leur règlement sont groupés dans un lot atomique. Les participants peuvent vérifier le résultat et les changements de propriété dans le registre partagé. L’accord métier préalable reste nécessaire dans les deux modèles.</p>
+      </details>
+    </div>
+    <div class="card proof-card" id="independent-proofs">
+      <h3>Essais de validation Testnet</h3>
+      <details open><summary>Panne réelle du processus principal</summary>
+        <p>Trois processus sur un même hôte détiennent trois clés distinctes. Le principal a été arrêté par le système. Le secours et le cosignataire ont ensuite signé le lot Testnet. Le graphiste a reçu 80 XRP et l’agence 20 XRP. L’essai a pris 6,8 s de l’arrêt à la vérification finale.</p>
+        <a class="ledger-link" href="https://testnet.xrpl.org/transactions/54C6923A1A626DE96A7DDD5A0D5B100D46349F82D5FD8076341F83D8EAC2F6F8" target="_blank" rel="noopener">Vérifier le règlement après l’arrêt</a>
+        <a class="ledger-link" href="https://testnet.xrpl.org/transactions/40B317064BB5078A19E62ADEC04A0BB2439C529699081B826F356E325981DA01" target="_blank" rel="noopener">Émission de PP-100 · 100 XRP</a>
+        <a class="ledger-link" href="https://testnet.xrpl.org/transactions/28ADB305121C3139C499AC8CB4476B2C1D45B3605E55E39C14DD3D8895BD6D82" target="_blank" rel="noopener">Émission de PP-080 · 80 XRP</a>
+        <a class="ledger-link" href="/preuves/panne.json" download>Preuve détaillée de la panne (JSON)</a>
+      </details>
+      <details open><summary>Deux règlements soumis en parallèle</summary>
+        <p>Les deux lots ont été signés avec la même séquence du compte client. Le circuit normal a été appliqué. Le secours a reçu <code>tefPAST_SEQ</code>. Relancé ensuite avec une nouvelle séquence et les offres d’origine, le secours a versé 0 XRP hors frais.</p>
+        <a class="ledger-link" href="https://testnet.xrpl.org/transactions/11E330D2D4198469D651DAC58BF04DDF1F401C06AF26C4286A45EF4373CF48BC" target="_blank" rel="noopener">Vérifier le lot concurrent validé</a>
+        <a class="ledger-link" href="https://testnet.xrpl.org/transactions/46614385CFD6383C84C1AD27F74F0CE485FA7AC3A80C93F19C73896DC0093F58" target="_blank" rel="noopener">Vérifier la relance sans versement</a>
+        <a class="ledger-link" href="/preuves/concurrence.json" download>Preuve détaillée de la concurrence (JSON)</a>
+      </details>
+    </div>
+    <div class="card proof-card">
+      <h3>Modèle IA et règles seules</h3>
+      <p>Sur une grille synthétique de 4 096 scénarios, les règles exactes autorisent 2 cas. Le modèle seul en propose 62, dont 60 non conformes à l’accord. Les règles bloquent ces 60 propositions. Ce test couvre des écarts de quelques drops à 1 XRP et n’établit aucun gain du modèle sur la conformité. Le modèle sert à classer les offres et à s’abstenir. Les règles exactes contrôlent le règlement.</p>
+    </div>
+    <div class="card proof-card">
+      <p>Ces transactions proviennent d’essais précédents. En session Testnet, chaque nouvelle décision cosignée produit un lot avec son propre mémo et ses signatures.</p>
+      <a class="ledger-link" href="https://testnet.xrpl.org/transactions/5E6ACE7CDFDB120431DBB97FA306D4F29DA66D149D2AE31DC105DD3A3A71B6AA" target="_blank" rel="noopener">Agent principal · règlement vérifié</a>
+      <a class="ledger-link" href="https://testnet.xrpl.org/transactions/33B61CB9E2CF99E4F130CC56D00CA96D805809BEE61BEF2F6BB4A73CD20E3631" target="_blank" rel="noopener">Agent de secours · règlement vérifié</a>
+      <a class="ledger-link" href="https://testnet.xrpl.org/transactions/2CCE0119C00842A8BDF4D1EC515D7FC873E34A4F4843D9E872D3B4967CC10F78" target="_blank" rel="noopener">Relance du principal · aucun versement supplémentaire</a>
+    </div>
+  </section>
+  <section class="activity" id="impact" aria-labelledby="impact-title">
+    <div class="section-head"><h2 id="impact-title">Impact du circuit de secours</h2></div>
+    <div class="card proof-card">
+      <h3>Un incident documenté</h3>
+      <p>Le 30 septembre 2026, Adyen a signalé des retards de versement pour une partie de ses clients au Brésil. L’incident a été résolu le 2 octobre. ProofPay teste un cas précis où un autre payeur est déjà autorisé à prendre le relais.</p>
+      <a class="ledger-link" href="https://status.adyen.com/incident-history" target="_blank" rel="noopener">Historique des incidents Adyen</a>
+      <p>Au Royaume-Uni, une étude publique estime que 28 % des entreprises sont touchées chaque année par des retards de paiement, toutes causes confondues.</p>
+      <a class="ledger-link" href="https://www.smallbusinesscommissioner.gov.uk/late-payments-research-2/" target="_blank" rel="noopener">Étude du Small Business Commissioner</a>
+    </div>
+    <div class="card proof-card">
+      <h3>Ce que cette session mesure</h3>
+      <p id="impact-measurements" aria-live="polite">Les mesures apparaissent après un règlement sur le Testnet.</p>
+    </div>
+    <div class="card proof-card">
+      <h3>Protocole de pilote à proposer à une entreprise</h3>
+      <ol>
+        <li>Quand un versement est bloqué, combien de temps faut-il généralement pour payer le prestataire ?</li>
+        <li>Qui pourrait préautoriser un second payeur et sur quelles factures ?</li>
+        <li>Quelles preuves faudrait-il pour valider le règlement et rapprocher la facture ?</li>
+      </ol>
+      <p>Relever sur un incident réel anonymisé la date de blocage, l’heure de reprise, le délai de règlement effectif et le responsable autorisé à payer. Rejouer le cas avec des données de test, selon la même heure de départ, et relever le délai panne → confirmation, le montant reçu par chacun, le nombre de relances et les frais. Séparer le temps de décision humaine du délai de confirmation XRPL.</p>
+      <p><strong>Critères de réussite du pilote.</strong> Deux bénéficiaires payés aux montants convenus, aucun versement supplémentaire après relance, attribution de la cosignature et rapprochement des deux factures. Comparer le délai de reprise à celui de l’incident initial et demander l’accord explicite du responsable métier sur le scénario de secours.</p>
+      <details><summary>Texte d’invitation au pilote</summary><p>Bonjour, nous testons ProofPay, un circuit de secours pour payer des prestataires lorsqu’un intermédiaire est indisponible. Auriez-vous 20 minutes pour nous décrire un incident de versement anonymisé et discuter de la personne qui pourrait autoriser un autre payeur ? Nous pouvons rejouer votre scénario sur un réseau de test, sans fonds ni documents réels.</p></details>
+      <p>Statut du pilote entreprise · à réaliser.</p>
+    </div>
+  </section>
+</main>
+</div>
+</body>
+</html>

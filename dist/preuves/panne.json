@@ -1,0 +1,161 @@
+{
+  "network": "XRPL Testnet",
+  "recordedAt": "2026-11-20T15:13:14.854Z",
+  "check": "outage",
+  "accounts": {
+    "restaurant": "rEFwwK8cRZBckxQNvkzgmN6tejq4eAtwHN",
+    "agency": "raDrtYk6zKJ7tcqViQopZzqU2a1RTcEBCn",
+    "designer": "rhcC6nPsyj8Lc7fiqJTewBDzmWrigRGWbo"
+  },
+  "issuance": {
+    "invoice": "40B317064BB5078A19E62ADEC04A0BB2439C529699081B826F356E325981DA01",
+    "work": "28ADB305121C3139C499AC8CB4476B2C1D45B3605E55E39C14DD3D8895BD6D82"
+  },
+  "tokens": {
+    "invoice": "000A0000391E5CC30B5E8EC0ED278008DFFE10C04FF7DEAF3DFF8D4F0156F390",
+    "work": "000A000027A73BCD1DC58ACE2712F002A57FFD01852976253DFF8D7B0156F390"
+  },
+  "offers": {
+    "normal": [
+      {
+        "claim": "invoice",
+        "payer": "restaurant",
+        "payee": "agency",
+        "drops": "100000000",
+        "id": "E57A894D270FB7A89C7E6740C2EA323A5EBD03C736D50C38FAA1AEF42592E594",
+        "token": "000A0000391E5CC30B5E8EC0ED278008DFFE10C04FF7DEAF3DFF8D4F0156F390",
+        "destination": "rEFwwK8cRZBckxQNvkzgmN6tejq4eAtwHN",
+        "owner": "raDrtYk6zKJ7tcqViQopZzqU2a1RTcEBCn"
+      },
+      {
+        "claim": "work",
+        "payer": "agency",
+        "payee": "designer",
+        "drops": "80000000",
+        "id": "6C037FD457603C3B6CC6053D8642D6624973BBC7ACC6401E6C3FA93D18414B05",
+        "token": "000A000027A73BCD1DC58ACE2712F002A57FFD01852976253DFF8D7B0156F390",
+        "destination": "raDrtYk6zKJ7tcqViQopZzqU2a1RTcEBCn",
+        "owner": "rhcC6nPsyj8Lc7fiqJTewBDzmWrigRGWbo"
+      }
+    ],
+    "rescue": [
+      {
+        "claim": "work",
+        "payer": "restaurant",
+        "payee": "designer",
+        "drops": "80000000",
+        "id": "E14DC53CFCC73ED5A5065A2BB269DB193CE10621C0E49B7921FBFDE5FC269093",
+        "token": "000A000027A73BCD1DC58ACE2712F002A57FFD01852976253DFF8D7B0156F390",
+        "destination": "rEFwwK8cRZBckxQNvkzgmN6tejq4eAtwHN",
+        "owner": "rhcC6nPsyj8Lc7fiqJTewBDzmWrigRGWbo"
+      },
+      {
+        "claim": "invoice",
+        "payer": "restaurant",
+        "payee": "agency",
+        "drops": "20000000",
+        "id": "74AFB1EF11710A31581DE497E9EC793DF76C73E3A5DBF4F87D65940F826F38B6",
+        "token": "000A0000391E5CC30B5E8EC0ED278008DFFE10C04FF7DEAF3DFF8D4F0156F390",
+        "destination": "rEFwwK8cRZBckxQNvkzgmN6tejq4eAtwHN",
+        "owner": "raDrtYk6zKJ7tcqViQopZzqU2a1RTcEBCn"
+      }
+    ],
+    "wrong": [
+      {
+        "claim": "work",
+        "payer": "restaurant",
+        "payee": "designer",
+        "drops": "85000000",
+        "id": "60686FB98CB09DBEDB617F6A8AA183D3666B617CFB3343F316998B3F117138E6",
+        "token": "000A000027A73BCD1DC58ACE2712F002A57FFD01852976253DFF8D7B0156F390",
+        "destination": "rEFwwK8cRZBckxQNvkzgmN6tejq4eAtwHN",
+        "owner": "rhcC6nPsyj8Lc7fiqJTewBDzmWrigRGWbo"
+      },
+      {
+        "claim": "invoice",
+        "payer": "restaurant",
+        "payee": "agency",
+        "drops": "15000000",
+        "id": "4BF8D2DDC212BA76594670849FF11610A3782FB27E95B4AFC26BC2CE9143EE05",
+        "token": "000A0000391E5CC30B5E8EC0ED278008DFFE10C04FF7DEAF3DFF8D4F0156F390",
+        "destination": "rEFwwK8cRZBckxQNvkzgmN6tejq4eAtwHN",
+        "owner": "raDrtYk6zKJ7tcqViQopZzqU2a1RTcEBCn"
+      }
+    ]
+  },
+  "quorumTransaction": "33750C84D52720522F52CA650AEDD58FFCC306D6BF45E9DAACC4079AFD518ED1",
+  "signers": {
+    "normal": {
+      "address": "rHMDbyYE9EB1k71ACBnDZsJ77cdhMZKnnQ",
+      "pid": 26
+    },
+    "rescue": {
+      "address": "rpVDANSnxi6B89RZaCSnCyv9pxYST76iSR",
+      "pid": 27
+    },
+    "reviewer": {
+      "address": "rLWtXHHUqQz39SZadv9a5taiq7cWbto9wo",
+      "pid": 28
+    }
+  },
+  "primaryStopped": true,
+  "recoveryMs": 6767,
+  "decision": {
+    "document": "{\"schema\":\"proofpay-mobile-decision-v1\",\"agent\":\"rpVDANSnxi6B89RZaCSnCyv9pxYST76iSR\",\"inference\":{\"model\":\"ProofPay Routing v1\",\"threshold\":0.85,\"index\":1,\"scores\":[0,0.98982]},\"observation\":{\"route\":\"rescue\",\"agencyOnline\":false,\"settled\":false,\"cancelled\":false,\"candidates\":[{\"amountErrors\":[1,1],\"identityErrors\":[false,false]},{\"amountErrors\":[0,0],\"identityErrors\":[false,false]}]},\"offers\":[{\"id\":\"E14DC53CFCC73ED5A5065A2BB269DB193CE10621C0E49B7921FBFDE5FC269093\",\"token\":\"000A000027A73BCD1DC58ACE2712F002A57FFD01852976253DFF8D7B0156F390\",\"drops\":\"80000000\",\"owner\":\"rhcC6nPsyj8Lc7fiqJTewBDzmWrigRGWbo\",\"destination\":\"rEFwwK8cRZBckxQNvkzgmN6tejq4eAtwHN\"},{\"id\":\"74AFB1EF11710A31581DE497E9EC793DF76C73E3A5DBF4F87D65940F826F38B6\",\"token\":\"000A0000391E5CC30B5E8EC0ED278008DFFE10C04FF7DEAF3DFF8D4F0156F390\",\"drops\":\"20000000\",\"owner\":\"raDrtYk6zKJ7tcqViQopZzqU2a1RTcEBCn\",\"destination\":\"rEFwwK8cRZBckxQNvkzgmN6tejq4eAtwHN\"}]}",
+    "digest": "0f7c70437752bdf4e1cfca7522c2e1b5134eaf0c6965b27969bc28dbfbd8f655"
+  },
+  "settlement": {
+    "status": "settled",
+    "proposal": {
+      "ok": true,
+      "issues": [],
+      "transfers": [
+        {
+          "claim": "work",
+          "payer": "restaurant",
+          "payee": "designer",
+          "drops": "80000000",
+          "id": "E14DC53CFCC73ED5A5065A2BB269DB193CE10621C0E49B7921FBFDE5FC269093",
+          "token": "000A000027A73BCD1DC58ACE2712F002A57FFD01852976253DFF8D7B0156F390",
+          "destination": "rEFwwK8cRZBckxQNvkzgmN6tejq4eAtwHN",
+          "owner": "rhcC6nPsyj8Lc7fiqJTewBDzmWrigRGWbo",
+          "expected": "80000000",
+          "ok": true
+        },
+        {
+          "claim": "invoice",
+          "payer": "restaurant",
+          "payee": "agency",
+          "drops": "20000000",
+          "id": "74AFB1EF11710A31581DE497E9EC793DF76C73E3A5DBF4F87D65940F826F38B6",
+          "token": "000A0000391E5CC30B5E8EC0ED278008DFFE10C04FF7DEAF3DFF8D4F0156F390",
+          "destination": "rEFwwK8cRZBckxQNvkzgmN6tejq4eAtwHN",
+          "owner": "raDrtYk6zKJ7tcqViQopZzqU2a1RTcEBCn",
+          "expected": "20000000",
+          "ok": true
+        }
+      ]
+    },
+    "deltas": {
+      "restaurant": "-100000000",
+      "agency": "20000000",
+      "designer": "80000000"
+    },
+    "inclusion": [
+      {
+        "hash": "6E9FBD82983D8848574B168BC7D8934C8CEDF70067B9ABD812F367B98686D140",
+        "code": "tesSUCCESS",
+        "applied": true
+      },
+      {
+        "hash": "B6C5AFC75F8CAF1472C453F48D7C3E1B8377105D9BE328A11528F0A61D203FC2",
+        "code": "tesSUCCESS",
+        "applied": true
+      }
+    ],
+    "batch": "54C6923A1A626DE96A7DDD5A0D5B100D46349F82D5FD8076341F83D8EAC2F6F8",
+    "outerCode": "tesSUCCESS",
+    "fee": "72",
+    "ledger": 22475693
+  }
+}

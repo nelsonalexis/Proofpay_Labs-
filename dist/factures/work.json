@@ -1,0 +1,9 @@
+{
+  "id": "PP-080",
+  "issuer": "Graphiste",
+  "debtor": "Agence",
+  "service": "Réalisation du logo",
+  "faceValueXrp": 80,
+  "demo": true,
+  "currency": "XRP Testnet"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "PP-100",
+  "issuer": "Agence",
+  "debtor": "Restaurant",
+  "service": "Conception d’un logo",
+  "faceValueXrp": 100,
+  "demo": true,
+  "currency": "XRP Testnet"
+}

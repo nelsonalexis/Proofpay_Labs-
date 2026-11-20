@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>ProofPay — Démonstration XRPL</title>
+<link rel="stylesheet" href="/styles.css">
+<script type="module" src="/app.js"></script>
+</head>
+<body>
+<header class="header">
+  <div class="header-inner">
+    <div class="brand"><span class="mark" aria-hidden="true">P</span>ProofPay</div>
+    <div class="toolbar">
+      <label class="sr-only" for="mode">Réseau de démonstration</label>
+      <select id="mode"><option value="simulation">Simulation locale</option><option value="testnet">XRPL Testnet</option></select>
+      <button class="secondary reset" data-action="reset">Nouveau scénario</button>
+    </div>
+  </div>
+</header>
+<main>
+  <section class="hero">
+    <div>
+      <p class="eyebrow">RÈGLEMENT SUR XRP LEDGER</p>
+      <h1>Deux circuits.<br><em>Un seul règlement.</em></h1>
+      <p class="intro">Le restaurant commande un logo. L’agence confie le travail à un graphiste. Si l’agence tombe en panne, le restaurant peut payer les deux bénéficiaires directement.</p>
+    </div>
+    <div class="hero-amount" aria-label="100 XRP à répartir">
+      <span>FACTURE DU RESTAURANT</span>
+      <strong>100<small> XRP</small></strong>
+      <div class="split"><i></i><i></i></div>
+      <div class="split-captions"><span>80 · Graphiste</span><span>20 · Agence</span></div>
+    </div>
+  </section>
+  <p id="notice" role="status" hidden></p>
+  <section class="ai-section" aria-labelledby="agent-title">
+    <div class="section-head"><h2 id="agent-title">Agents IA et signatures XRPL</h2><span id="ai-status" class="status"></span></div>
+    <div class="ai-grid">
+      <article class="card agent"><h3>Agent Agence</h3><p id="health-normal">Circuit normal</p><code id="identity-normal"></code><button class="secondary" data-action="ask-normal">Consulter l’agent Agence</button><div id="decision-normal" aria-live="polite"></div></article>
+      <article class="card agent"><h3>Agent Restaurant</h3><p id="health-rescue">Circuit de secours</p><code id="identity-rescue"></code><button class="secondary" data-action="ask-rescue">Consulter l’agent Restaurant</button><div id="decision-rescue" aria-live="polite"></div></article>
+    </div>
+    <div id="signer-proof"></div>
+  </section>
+  <div class="workspace">
+    <section class="routes" aria-labelledby="routes-title">
+      <div class="section-head"><h2 id="routes-title">Circuits de paiement</h2><span id="agency-state" class="status"></span></div>
+      <article class="card route">
+        <div class="route-top"><span class="route-icon" aria-hidden="true">↗</span><div><h3>Circuit normal</h3><p>L’agence reçoit puis reverse la part du graphiste.</p></div></div>
+        <ul class="flows"><li><span>Restaurant <b>→</b> Agence</span><strong>100 XRP</strong></li><li><span>Agence <b>→</b> Graphiste</span><strong>80 XRP</strong></li></ul>
+        <button class="secondary" data-action="normal">Régler via l’agence</button>
+      </article>
+      <article class="card route rescue">
+        <div class="route-top"><span class="route-icon" aria-hidden="true">↯</span><div><h3>Circuit de secours</h3><p>Le restaurant répartit directement le paiement.</p></div></div>
+        <ul class="flows"><li><span>Restaurant <b>→</b> Graphiste</span><strong>80 XRP</strong></li><li><span>Restaurant <b>→</b> Agence</span><strong>20 XRP</strong></li></ul>
+        <button class="primary" data-action="rescue">Déclencher le secours</button>
+      </article>
+      <div class="controls">
+        <button class="secondary" data-action="toggle" id="toggle">Arrêter l’agent principal</button>
+        <button class="secondary" data-action="wrong">Tester 85 + 15 XRP</button>
+        <button class="secondary" data-action="rollback">Tester l’annulation du lot</button>
+        <button class="secondary" data-action="replay" title="Tente l’autre circuit avec les offres initiales">Retenter l’autre circuit</button>
+      </div>
+    </section>
+    <section aria-labelledby="review-title" class="audit">
+      <div class="section-head"><h2 id="review-title">Contrôle du règlement</h2><span id="mode-tag" class="status"></span></div>
+      <div class="card report" id="report" aria-live="polite"></div>
+      <div class="card claims" id="claims"></div>
+    </section>
+  </div>
+  <section class="activity" aria-labelledby="activity-title">
+    <div class="section-head"><h2 id="activity-title">Journal de la démo</h2><a id="proof-export" href="/preuve.json" hidden>Télécharger la preuve</a></div>
+    <ol id="timeline"></ol>
+  </section>
+</main>
+</body>
+</html>
