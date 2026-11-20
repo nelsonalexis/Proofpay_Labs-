@@ -20,7 +20,7 @@ function xrp(drops) {
 }
 
 function label(route) {
-  return route === 'normal' ? 'Agency agent' 'Restaurant agent'
+  return route === 'normal' ? 'Agency agent' : 'Restaurant agent'
 }
 
 function link(hash, text) {
@@ -52,7 +52,7 @@ function renderAgents() {
   byId('ai-status').textContent = 'ROUTING MODEL'
   for (const route of ['normal', 'rescue']) {
     const health = state.agentsHealth[route]
-    byId('health-' + route).textContent = health.online ? 'Available' 'Simulated outage'
+    byId('health-' + route).textContent = health.online ? 'Available' : 'Simulated outage'
     byId('identity-' + route).textContent = state.identities[route] || ''
     const panel = byId('decision-' + route)
     const item = state.decisions[route]
@@ -60,7 +60,7 @@ function renderAgents() {
       panel.replaceChildren()
       continue
     }
-    const title = item.approved ? 'Settlement proposed' : item.choice === 'wait' ? 'Waiting' 'Proposal rejected'
+    const title = item.approved ? 'Settlement proposed' : item.choice === 'wait' ? 'Waiting' : 'Proposal rejected'
     const scores = item.scores.map((score, index) => 'Offer ' + (index + 1) + ' ' + Math.round(score * 100) + '%')
     panel.replaceChildren(node('strong', title), node('p', item.explanation),
       node('p', scores.length ? scores.join(' · ') + ' · Threshold ' + Math.round(item.threshold * 100) + '%' : 'No offers available'),
@@ -83,19 +83,19 @@ function renderReport() {
     panel.append(node('p', 'Choose a route to review the agent’s proposal, amounts, and recipients.'))
     return
   }
-  panel.append(node('p', label(active.route) + ' · ' + (active.route === 'normal' ? 'Normal route' 'Backup route'), 'muted'))
+  panel.append(node('p', label(active.route) + ' · ' + (active.route === 'normal' ? 'Normal route' : 'Backup route'), 'muted'))
   const list = node('ul', undefined, 'review-list')
   for (const item of active.proposal.transfers) {
     const li = node('li')
     const values = node('div')
     values.append(node('strong', roles[item.payee]), node('small', 'Payer ' + roles[item.payer] + ' · ' + item.id.slice(0, 9) + '…'))
-    li.append(values, node('strong', xrp(item.drops) + ' XRP', item.ok ? 'ok' 'error'))
+    li.append(values, node('strong', xrp(item.drops) + ' XRP', item.ok ? 'ok' : 'error'))
     if (!item.ok) values.append(node('small', xrp(item.expected) + ' XRP agreed', 'error'))
     list.append(li)
   }
   panel.append(list)
   if (active.attestation) {
-    panel.append(node('small', (result?.batch && !preview ? 'Hash recorded on XRPL · ' 'Decision hash · ')
+    panel.append(node('small', (result?.batch && !preview ? 'Hash recorded on XRPL · ' : 'Decision hash · ')
       + active.attestation.digest), receiptLink(active.attestation))
   }
   if (preview) {
@@ -116,14 +116,14 @@ function renderReport() {
     const totals = node('div', undefined, 'totals')
     for (const [role, drops] of Object.entries(result.deltas)) {
       const cell = node('div')
-      cell.append(node('span', roles[role]), node('strong', (Number(drops) > 0 ? '+' '') + xrp(drops)))
+      cell.append(node('span', roles[role]), node('strong', (Number(drops) > 0 ? '+' : '') + xrp(drops)))
       totals.append(cell)
     }
     panel.append(totals, node('small', 'Balance changes in XRP, excluding batch fees.'))
   }
   if (result.batch) {
     panel.append(link(result.batch, 'View the batch on XRPL'))
-    const checks = result.inclusion.map(item => item.applied ? 'confirmed' 'no payout').join(' / ')
+    const checks = result.inclusion.map(item => item.applied ? 'confirmed' : 'no payout').join(' / ')
     panel.append(node('small', 'Inner transactions · ' + checks))
     if (result.cancelled) panel.append(link(result.cancelled, 'View the offer cancellation'))
   }
@@ -141,12 +141,12 @@ function render() {
   byId('simulation-return').hidden = !err || state.mode !== 'testnet'
   byId('notice').textContent = message || ''
   byId('notice').classList.toggle('error', Boolean(err))
-  byId('agency-state').textContent = state.agencyOnline ? 'Agency online' 'Agency offline'
+  byId('agency-state').textContent = state.agencyOnline ? 'Agency online' : 'Agency offline'
   byId('agency-state').classList.toggle('offline', !state.agencyOnline)
-  byId('mode-tag').textContent = state.mode === 'testnet' ? 'XRPL TESTNET' 'SIMULATION'
+  byId('mode-tag').textContent = state.mode === 'testnet' ? 'XRPL TESTNET' : 'SIMULATION'
   byId('mode-tag').classList.toggle('live', state.mode === 'testnet')
-  byId('toggle').textContent = state.agencyOnline ? 'Simulate outage' 'Restore the normal route'
-  const other = state.winner === 'rescue' ? 'normal' 'rescue'
+  byId('toggle').textContent = state.agencyOnline ? 'Simulate outage' : 'Restore the normal route'
+  const other = state.winner === 'rescue' ? 'normal' : 'rescue'
   const enabled = {
     reset: !running, testnet: !running, simulation: !running,
     toggle: ready,
@@ -185,11 +185,11 @@ function render() {
   if (state.offers && state.mode === 'testnet') {
     for (const key of ['invoice', 'work']) {
       const group = node('details', undefined, 'claim')
-      group.append(node('summary', key === 'invoice' ? 'PP-100 · Restaurant invoice' 'PP-080 · Freelancer invoice'),
+      group.append(node('summary', key === 'invoice' ? 'PP-100 · Restaurant invoice' : 'PP-080 · Freelancer invoice'),
         node('code', state.claims[key]))
       for (const route of ['normal', 'rescue']) {
         const offer = state.offers[route].find(row => row.claim === key)
-        group.append(node('strong', (route === 'normal' ? 'Normal route' 'Backup route') + ' · ' + xrp(offer.drops) + ' XRP'),
+        group.append(node('strong', (route === 'normal' ? 'Normal route' : 'Backup route') + ' · ' + xrp(offer.drops) + ' XRP'),
           node('code', offer.id))
       }
       offerProof.append(group)
@@ -201,9 +201,9 @@ function render() {
   byId('impact-measurements').textContent = settlement?.durationMs !== undefined
     ? [
         'Time to confirmation after co-signing · ' + (settlement.durationMs / 1000).toLocaleString('en-US') + ' s.',
-        settlement.recoveryMs === undefined ? '' 'Time from simulated outage to confirmation · '
+        settlement.recoveryMs === undefined ? '' : 'Time from simulated outage to confirmation · '
           + (settlement.recoveryMs / 1000).toLocaleString('en-US') + ' s, including operator time.',
-        state.result?.variant === 'replay' && state.result.status === 'reverted' ? 'Additional payout after retry · 0 XRP excluding fees.' '',
+        state.result?.variant === 'replay' && state.result.status === 'reverted' ? 'Additional payout after retry · 0 XRP excluding fees.' : '',
       ].filter(Boolean).join(' ')
     : 'Measurements appear after a Testnet settlement.'
   byId('proof-export').hidden = !(state.mode === 'testnet' && state.settlement?.batch)
