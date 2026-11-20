@@ -19,7 +19,7 @@ export const quote = {
 export function checkProposal(scenario, route, actual) {
   const expected = TERMS[route]
   if (!expected || actual.length !== expected.length) {
-    return { ok: false, issues: ['Circuit ou nombre de versements invalide.'], transfers: [] }
+    return { ok: false, issues: ['Invalid route or payout count.'], transfers: [] }
   }
   const issues = []
   const transfers = expected.map((leg, index) => {
@@ -30,8 +30,8 @@ export function checkProposal(scenario, route, actual) {
       && row.payer === leg.payer && row.payee === leg.payee
       && row.destination === scenario.accounts[leg.payer]
       && row.owner === scenario.accounts[leg.payee]
-    if (!amountOK) issues.push(`Versement ${index + 1} · ${formatXrp(row.drops)} XRP proposés, ${formatXrp(leg.drops)} convenus.`)
-    if (!identityOK) issues.push(`Versement ${index + 1} · payeur, bénéficiaire ou jeton non conforme.`)
+    if (!amountOK) issues.push(`Payout ${index + 1} · ${formatXrp(row.drops)} XRP offered, ${formatXrp(leg.drops)} XRP agreed.`)
+    if (!identityOK) issues.push(`Payout ${index + 1} · payer, recipient, or token does not match the agreement.`)
     return { ...row, expected: leg.drops, ok: amountOK && identityOK }
   })
   return { ok: issues.length === 0, issues, transfers }

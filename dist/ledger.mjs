@@ -38,21 +38,21 @@ async function testnetRequest(path, body, service) {
   const firstDirect = path === 'rpc' && directPreferred
   const first = await (firstDirect ? direct : sameOrigin)()
   if (isSuccess(first)) return first.body
-  if (path === 'faucet' && first.status === 429) throw new Error(first.body.message || 'Le robinet XRPL limite temporairement les demandes.')
+  if (path === 'faucet' && first.status === 429) throw new Error(first.body.message || 'The XRPL faucet is temporarily rate-limiting requests.')
   const second = await (firstDirect ? sameOrigin : direct)()
   if (isSuccess(second)) {
     if (path === 'rpc') directPreferred = !firstDirect
     return second.body
   }
-  if (second.status === 429) throw new Error(service + ' limite temporairement les demandes. Réessaie dans quelques instants.')
-  throw new Error(first.body.message || service + ' est inaccessible. Réessaie ou reviens à la simulation.')
+  if (second.status === 429) throw new Error(service + ' is temporarily rate-limiting requests. Try again shortly.')
+  throw new Error(first.body.message || service + ' is unavailable. Try again or return to simulation.')
 }
 
 // Reuse the SDK's autofill, signing and confirmation logic over same-origin HTTPS.
 class TestnetClient extends Client {
   async connect() {
     const { result } = await this.request({ command: 'server_info' })
-    if (result.info.network_id !== 1) throw new Error('Le serveur connecté ne correspond pas au XRPL Testnet.')
+    if (result.info.network_id !== 1) throw new Error('The connected server is not on XRP Ledger Testnet.')
     this.networkID = result.info.network_id
     this.buildVersion = result.info.build_version
   }
@@ -60,10 +60,10 @@ class TestnetClient extends Client {
   async disconnect() {}
 
   async request(command) {
-    const response = await testnetRequest('rpc', command, 'Le registre Testnet')
+    const response = await testnetRequest('rpc', command, 'The Testnet ledger')
     const { result } = response
     if (!result || result.error) {
-      throw Object.assign(new Error(result?.error_message || result?.error || 'Réponse XRPL invalide.'), { data: result })
+      throw Object.assign(new Error(result?.error_message || result?.error || 'Invalid XRPL response.'), { data: result })
     }
     return response
   }
@@ -71,8 +71,8 @@ class TestnetClient extends Client {
 
 async function fundedWallet(client, wallet, minimum) {
   const requestFunds = async () => {
-    const result = await testnetRequest('faucet', { destination: wallet.address }, 'Le robinet XRPL')
-    if (result.error) throw new Error('Le robinet XRPL a refusé le financement de test.')
+    const result = await testnetRequest('faucet', { destination: wallet.address }, 'The XRPL faucet')
+    if (result.error) throw new Error('The XRPL faucet rejected the funding request.')
   }
   await requestFunds()
   let toppedUp = false
@@ -89,7 +89,7 @@ async function fundedWallet(client, wallet, minimum) {
     }
     await new Promise(resolve => setTimeout(resolve, 1100))
   }
-  throw new Error('Le faucet n’a pas crédité suffisamment de XRP de test.')
+  throw new Error('The faucet did not provide enough test XRP.')
 }
 
 function resultCode(result) {
@@ -118,7 +118,7 @@ async function offer(client, wallets, scenario, row) {
   })
   const id = result.meta.AffectedNodes.find(node => node.CreatedNode?.LedgerEntryType === 'NFTokenOffer')
     ?.CreatedNode.LedgerIndex
-  if (!id) throw new Error('Impossible de récupérer l’offre validée.')
+  if (!id) throw new Error('Could not find the validated offer.')
   return { ...row, id, token: scenario.tokens[row.claim], destination: scenario.accounts[row.payer],
     owner: scenario.accounts[row.payee] }
 }
@@ -133,7 +133,7 @@ async function mint(client, wallet, taxon, uri) {
   const tokens = await client.request({ command: 'account_nfts', account: wallet.address, ledger_index: 'validated' })
   const minted = tokens.result.account_nfts.find(token => token.NFTokenTaxon === taxon && (!id || token.NFTokenID === id))
   if (!minted || minted.URI?.toUpperCase() !== convertStringToHex(uri).toUpperCase()) {
-    throw new Error('La facture ne correspond pas au NFT émis.')
+    throw new Error('The invoice hash does not match the minted NFT.')
   }
   return { id: minted.NFTokenID, transaction: result.hash }
 }
@@ -141,20 +141,20 @@ async function mint(client, wallet, taxon, uri) {
 export async function liveSession(progress, signing = {}) {
   const client = new TestnetClient('wss://testnet.xrpl-labs.com/')
   try {
-    progress('Connexion au registre XRPL Testnet…')
+    progress('Connecting to XRP Ledger Testnet…')
     await client.connect()
     const features = await client.request({ command: 'feature' })
     if (!features.result.features[amendment]?.enabled) {
-      throw new Error('BatchV1_1 est indisponible sur ce réseau.')
+      throw new Error('BatchV1_1 is unavailable on this network.')
     }
-    progress('Financement de trois comptes XRPL…')
+    progress('Funding three XRPL accounts…')
     const wallets = Object.fromEntries(roles.map(role => [role, Wallet.generate()]))
     await Promise.all(roles.map(role =>
       fundedWallet(client, wallets[role], role === 'restaurant' ? 105000000n : 5000000n)))
     const agents = signing.agents ?? { normal: Wallet.generate(), rescue: Wallet.generate() }
     const reviewer = signing.reviewer ?? Wallet.generate()
     const accounts = Object.fromEntries(roles.map(role => [role, wallets[role].address]))
-    progress('Configuration du quorum et émission des deux jetons…')
+    progress('Setting up signer quorum and minting both tokens…')
     const signerRegistration = await single(client, wallets.restaurant, {
       TransactionType: 'SignerListSet', SignerQuorum: 3,
       SignerEntries: [
@@ -174,7 +174,7 @@ export async function liveSession(progress, signing = {}) {
     const scenario = { accounts, tokens: { invoice: invoice.id, work: work.id },
       issuance: { invoice: invoice.transaction, work: work.transaction }, offers: {}, cancelled: false,
       signerRegistration: signerRegistration.hash }
-    progress('Création des offres réservées aux deux circuits…')
+    progress('Creating restricted offers for both routes…')
     // Serialize writes per seller to avoid conflicting sequence numbers.
     const plans = { ...TERMS, ...quote }
     const all = Object.entries(plans).flatMap(([plan, rows]) => rows.map((row, index) => ({ plan, index, row })))
@@ -184,7 +184,7 @@ export async function liveSession(progress, signing = {}) {
         scenario.offers[item.plan][item.index] = await offer(client, wallets, scenario, item.row)
       }
     }))
-    progress('Activation de la cosignature pour le compte de l’agence…')
+    progress('Enabling co-signing for the agency account…')
     await single(client, wallets.agency, {
       TransactionType: 'SignerListSet', SignerQuorum: 2,
       SignerEntries: [agents.normal, reviewer].map(wallet => ({
@@ -207,7 +207,7 @@ export async function observedOffer(client, row) {
   })
   const node = response.result.node
   if (node.LedgerEntryType !== 'NFTokenOffer' || node.Flags !== 1) {
-    throw new Error('Type d’offre XRPL inattendu.')
+    throw new Error('Unexpected XRPL offer type.')
   }
   return { ...row, drops: node.Amount, owner: node.Owner, token: node.NFTokenID, destination: node.Destination }
 }
@@ -264,7 +264,7 @@ export async function prepareBatch(ctx, route, variant, proposal, attestation) {
       || evidence.offers.some((offer, index) => {
         const row = rows[index]
         return ['id', 'token', 'drops', 'owner', 'destination'].some(field => offer[field] !== row[field])
-      })) throw new Error('La décision du modèle ne correspond plus aux offres à signer.')
+      })) throw new Error('The model decision no longer matches the offers being signed.')
     draft.Memos = [{ Memo: {
       MemoType: convertStringToHex('proofpay-mobile-decision-v1'),
       MemoFormat: convertStringToHex('text/plain'),
@@ -282,7 +282,7 @@ export async function prepareBatch(ctx, route, variant, proposal, attestation) {
     && unsigned.RawTransactions.every(({ RawTransaction: inner }, index) =>
       inner.TransactionType === 'NFTokenAcceptOffer' && inner.NFTokenSellOffer === rows[index].id
       && inner.Account === rows[index].destination && inner.Flags === GlobalFlags.tfInnerBatchTxn)
-  if (!matches) throw new Error('Le lot exact diffère de la proposition approuvée.')
+  if (!matches) throw new Error('The exact batch differs from the approved proposal.')
   if (route === 'normal') {
     const approvals = (await Promise.all([agents.normal, reviewer].map(async wallet => {
       const copy = structuredClone(unsigned)
@@ -327,12 +327,12 @@ export async function liveRun(ctx, route, variant, attestation) {
     + (role === 'restaurant' ? BigInt(fee) : 0n))]))
   const applied = result.validated && inclusion.every(row => row.applied)
   if (inclusion.some(row => row.applied) !== applied) {
-    throw new Error('Résultat des opérations internes incohérent, inspecte le registre.')
+    throw new Error('The inner transaction results are inconsistent. Check the ledger.')
   }
   const amounts = applied ? { restaurant: '-100000000', agency: '20000000', designer: '80000000' }
     : { restaurant: '0', agency: '0', designer: '0' }
   if (roles.some(role => amounts[role] !== deltas[role])) {
-    throw new Error('Les variations de soldes observées diffèrent des montants attendus.')
+    throw new Error('The observed balance changes do not match the expected amounts.')
   }
   return {
     status: applied ? 'settled' : 'reverted', proposal, deltas, inclusion, cancelled,

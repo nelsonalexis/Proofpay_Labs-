@@ -19,7 +19,7 @@ export async function runRoutingAgent(observation) {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
       stopRoutingAgent(route)
-      reject(new Error('L’agent de décision n’a pas répondu.'))
+      reject(new Error('The routing agent did not respond.'))
     }, 7000)
     agent.onmessage = ({ data }) => {
       clearTimeout(timer)
@@ -29,7 +29,7 @@ export async function runRoutingAgent(observation) {
     agent.onerror = () => {
       clearTimeout(timer)
       stopRoutingAgent(route)
-      reject(new Error('Impossible de démarrer l’agent de décision.'))
+      reject(new Error('Could not start the routing agent.'))
     }
     agent.postMessage(observation)
   })
